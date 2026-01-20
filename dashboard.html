@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Douce Tentation</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Douce Tentation</h2>
+                <span class="sidebar-subtitle">MANAGER</span>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="active">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendrier</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-list"></i>
+                    <span>Commandes</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-users"></i>
+                    <span>Clients</span>
+                </a>
+                <a href="#">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Statistiques</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="simulateGloriaBtn" class="sidebar-btn">
+                    <i class="fas fa-sync"></i> Sync
+                </button>
+                <a href="index.html" class="sidebar-btn logout">
+                    <i class="fas fa-sign-out-alt"></i> Retour Site
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <div class="calendar-header">
+                <div>
+                    <h1>Calendrier de Production</h1>
+                    <p class="text-muted">Gérez vos commandes spéciales et la production hebdomadaire.</p>
+                </div>
+                <button class="btn btn-primary" id="newOrderBtn">
+                    <i class="fas fa-plus"></i> Nouvelle Commande
+                </button>
+            </div>
+
+            <!-- Calendar Wrapper -->
+            <div class="calendar-grid" id="calendarGrid">
+                <!-- Javascript will inject columns here -->
+            </div>
+
+        </main>
+    </div>
+
+    <!-- Modal Form for New Order -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 style="margin-bottom: 20px;">Nouvelle Commande Spéciale</h2>
+
+            <div class="step-wizard">
+                <div class="step active">1</div>
+                <div class="step">2</div>
+                <div class="step">3</div>
+            </div>
+
+            <form id="orderForm">
+                <!-- Step 1: Product -->
+                <div class="form-step" id="step1">
+                    <div class="form-group">
+                        <label>Type de Gâteau</label>
+                        <select id="cakeType" required>
+                            <option value="Fraisier">Fraisier</option>
+                            <option value="ForetNoire">Forêt Noire</option>
+                            <option value="MousseChoco">Mousse 3 Chocolats</option>
+                            <option value="PieceMontee">Pièce Montée</option>
+                            <option value="Autre">Autre (Sur devis)</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nombre de parts</label>
+                        <select id="cakeSize" required>
+                            <option value="4">4 Personnes</option>
+                            <option value="6">6 Personnes</option>
+                            <option value="8">8 Personnes</option>
+                            <option value="12">12 Personnes</option>
+                            <option value="20+">20+ Personnes</option>
+                        </select>
+                    </div>
+                </div>
+
+                <!-- Step 2: Customization -->
+                <div class="form-step" style="display:none;" id="step2">
+                    <div class="form-group">
+                        <label>Inscription (Plaque chocolat +2€)</label>
+                        <input type="text" id="cakeMessage" placeholder="ex: Joyeux Anniversaire Léo"
+                            style="background:var(--color-bg-body); color:var(--color-text-main);">
+                    </div>
+
+                    <div class="form-group">
+                        <label>Suppléments & Options</label>
+                        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
+                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="optCandles" value="Bougies"> Bougies (+3€)
+                            </label>
+                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="optPhoto" value="Impression Photo"> Impression Photo (+10€)
+                            </label>
+                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="optGluten" value="Sans Gluten"> Sans Gluten
+                            </label>
+                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                                <input type="checkbox" id="optLactose" value="Sans Lactose"> Sans Lactose
+                            </label>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Notes / Allergies</label>
+                        <textarea id="cakeNotes" rows="3"
+                            style="background:var(--color-bg-body); color:var(--color-text-main);"></textarea>
+                    </div>
+                </div>
+
+                <!-- Step 3: Client Info -->
+                <div class="form-step" style="display:none;" id="step3">
+                    <div class="form-group">
+                        <label>Nom du Client</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="clientPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date & Heure de Retrait</label>
+                        <!-- For simplicity, we assume the date matches one of the visible days, but in real app this is a datepicker -->
+                        <select id="pickupDay" required>
+                            <!-- JS will populate -->
+                        </select>
+                        <input type="time" id="pickupTime" required value="10:00">
+                    </div>
+
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Valider la
+                        Commande</button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                    <button type="button" class="btn btn-secondary" id="prevBtn"
+                        style="visibility: hidden;">Précédent</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content" style="max-width: 400px;">
+            <span class="close-modal" id="closeDetailModal">&times;</span>
+            <div id="detailContent">
+                <!-- Injected via JS -->
+            </div>
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button id="editOrderBtn" class="btn btn-primary" style="flex: 1;">Modifier</button>
+                <button id="deleteOrderBtn" class="btn btn-secondary"
+                    style="flex: 1; border-color: #E85D04; color: #E85D04;">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js?v=2"></script>
+</body>
+
+</html>
