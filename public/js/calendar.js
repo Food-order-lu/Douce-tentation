@@ -113,7 +113,7 @@ function createCalendar(options) {
         card.innerHTML = `
             ${statusHTML}
             <div class="order-time">${order.time}</div>
-            <div class="order-client" style="font-weight:bold; font-size:1.05rem; color:var(--color-primary); margin-bottom:2px;">${order.client}</div>
+            <div class="order-client" style="font-weight:bold; font-size:1.05rem; color:var(--color-primary); margin-bottom:2px;">#${order.id} - ${order.client}</div>
             ${itemsHTML}
             ${supplementsHTML}
             ${sourceLabel ? `<div style="font-size:0.65rem; font-weight:bold; margin-top:8px; opacity:0.8; text-transform:uppercase; letter-spacing:0.5px;">${sourceLabel} ${order.status === 'Ready' ? '✓' : ''}</div>` : ''}
