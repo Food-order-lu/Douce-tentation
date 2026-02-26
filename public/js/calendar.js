@@ -67,7 +67,7 @@ function createCalendar(options) {
 
         // Orders for this day
         const dayOrders = ordersData
-            .filter(o => o.date === dateStr)
+            .filter(o => o.date === dateStr && o.status !== 'Pending')
             .sort((a, b) => a.time.localeCompare(b.time));
 
         dayOrders.forEach(order => {
@@ -91,15 +91,13 @@ function createCalendar(options) {
             supplementsHTML = `<div style="font-size:0.75rem; color:#888; border-top:1px solid #eee; margin-top:4px; padding-top:2px;">+ ${order.supplements.join(', ')}</div>`;
         }
 
-        card.className = `order-card ${sourceClass} ${order.status === 'Pending' ? 'unconfirmed' : ''}`;
+        card.className = `order-card ${sourceClass}`;
 
         let statusHTML = '';
         if (order.status === 'Ready') {
             statusHTML = `<div style="position:absolute; top:10px; right:10px; color:#2D6A4F; font-size:0.8rem;"><i class="fas fa-check-circle"></i></div>`;
         } else if (order.status === 'In Progress') {
             statusHTML = `<div style="position:absolute; top:10px; right:10px; color:#E85D04; font-size:0.8rem;"><i class="fas fa-spinner fa-spin"></i></div>`;
-        } else if (order.status === 'Pending') {
-            statusHTML = `<div style="position:absolute; top:10px; right:10px; color:#E85D04; font-size:0.65rem; font-weight:bold; background:rgba(232,93,4,0.1); padding:2px 6px; border-radius:4px; border:1px solid rgba(232,93,4,0.3);"><i class="fas fa-exclamation-triangle"></i> NON CONFIRMÉ</div>`;
         }
 
         const items = order.items || (order.gloriaRaw && order.gloriaRaw.items) || [];
