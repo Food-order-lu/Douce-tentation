@@ -714,6 +714,7 @@ nav {
 }
 
 .order-card {
+    position: relative;
     background: #1a1a1a;
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-left: 4px solid var(--color-primary);
