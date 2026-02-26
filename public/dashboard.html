@@ -1,0 +1,407 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | Douce Tentation</title>
+    <link rel="stylesheet" href="css/style.css">
+    <!-- Fonts -->
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>Douce Tentation</h2>
+            </div>
+
+            <nav class="sidebar-nav">
+                <a href="#" class="active" id="navCalendrier">
+                    <i class="fas fa-calendar-alt"></i>
+                    <span>Calendrier</span>
+                </a>
+            </nav>
+
+            <div class="sidebar-footer">
+                <button id="downloadBackupBtn" class="sidebar-btn"
+                    style="width: 100%; margin-bottom: 10px; background: rgba(255,255,255,0.05);">
+                    <i class="fas fa-file-download"></i> Backup DB
+                </button>
+                <button id="simulateGloriaBtn" class="sidebar-btn" style="width: 100%; margin-bottom: 10px;">
+                    <i class="fas fa-sync"></i> Sync
+                </button>
+                <a href="index.html" class="sidebar-btn logout" style="width: 100%; text-decoration: none;">
+                    <i class="fas fa-sign-out-alt"></i> Retour Site
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Calendrier View -->
+            <section id="calendrierView" class="dashboard-section">
+                <div class="calendar-header">
+                    <div>
+                        <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Calendrier de Production</h1>
+                        <p style="color: var(--color-text-muted); font-weight: 300; letter-spacing: 0.5px;">Gérez vos
+                            commandes spéciales et la production hebdomadaire.</p>
+                    </div>
+                    <button class="btn btn-primary" id="newOrderBtn">
+                        <i class="fas fa-plus"></i> Nouvelle Commande
+                    </button>
+                </div>
+
+                <div class="calendar-grid" id="calendarGrid">
+                    <!-- Javascript will inject columns here -->
+                </div>
+            </section>
+
+            <!-- Commandes View -->
+            <section id="commandesView" class="dashboard-section" style="display:none;">
+                <div class="calendar-header">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Toutes les Commandes</h1>
+                </div>
+                <div id="commandesList" class="data-table-container">
+                    <p style="color: #888;">Chargement des commandes...</p>
+                </div>
+            </section>
+
+            <!-- Clients View -->
+            <section id="clientsView" class="dashboard-section" style="display:none;">
+                <div class="calendar-header">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Base Clients</h1>
+                </div>
+                <div id="clientsList" class="data-table-container">
+                    <p style="color: #888;">Chargement des clients...</p>
+                </div>
+            </section>
+
+            <!-- Statistiques View -->
+            <section id="statsView" class="dashboard-section" style="display:none;">
+                <div class="calendar-header">
+                    <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Statistiques</h1>
+                </div>
+                <div id="statsContent" class="stats-grid">
+                    <p style="color: #888;">Analyse des données en cours...</p>
+                </div>
+            </section>
+
+        </main>
+    </div>
+
+    <!-- Modal Form for New Order -->
+    <div class="modal" id="orderModal">
+        <div class="modal-content">
+            <span class="close-modal" id="closeModal">&times;</span>
+            <h2 style="margin-bottom: 20px;">Nouvelle Commande Spéciale</h2>
+
+            <div class="step-wizard">
+                <div class="step active" data-step="0">1 <span class="step-label">Produit</span></div>
+                <div class="step" data-step="1">2 <span class="step-label">Options</span></div>
+                <div class="step" data-step="2">3 <span class="step-label">Client</span></div>
+                <div class="step" data-step="3">4 <span class="step-label">Résumé</span></div>
+            </div>
+
+            <form id="orderForm">
+                <!-- Step 1: Product -->
+                <div class="form-step" id="step1">
+                    <h2 style="text-align: center; margin-bottom: 25px; font-size: 1.2rem;">Type de Gâteau / Commande
+                    </h2>
+                    <div class="form-group">
+                        <label>Résumé de la commande</label>
+                        <input type="text" id="cakeType" required placeholder="Ex: Gâteau d'anniversaire au chocolat">
+                    </div>
+                    <div class="form-group">
+                        <label>Taille / Quantité</label>
+                        <input type="text" id="cakeSize" required>
+                    </div>
+
+                    <div id="itemsContainer" style="margin-top: 15px; border-top: 1px solid #333; padding-top: 15px;">
+                        <label style="margin-bottom: 10px; display: block;">Articles détaillés:</label>
+                        <div id="wizardItemsList">
+                            <!-- Injected via JS -->
+                        </div>
+                        <button type="button" id="addItemBtn" class="btn btn-secondary"
+                            style="width: 100%; border-radius: 8px; padding: 10px; font-size: 0.8rem; margin-top: 10px;">
+                            <i class="fas fa-plus"></i> Ajouter un article
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Step 2: Customization -->
+                <div class="form-step" style="display:none;" id="step2">
+                    <div class="form-group">
+                        <label>Notes Globales de la Commande / Allergies</label>
+                        <textarea id="cakeNotes" rows="4"
+                            placeholder="Instructions générales pour toute la commande..."></textarea>
+                    </div>
+                </div>
+
+                <div class="form-step" style="display:none;" id="step3">
+                    <h2 style="text-align: center; margin-bottom: 25px; font-size: 1.2rem;">Informations Client</h2>
+                    <div class="form-group">
+                        <label>Nom du Client</label>
+                        <input type="text" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Téléphone</label>
+                        <input type="tel" id="clientPhone" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Date & Heure de Retrait</label>
+                        <div style="display: flex; gap: 10px;">
+                            <select id="pickupDay" required style="flex: 2;">
+                                <!-- JS will populate with visible week dates -->
+                            </select>
+                            <input type="time" id="pickupTime" required value="10:00" style="flex: 1;">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Summary -->
+                <div class="form-step" style="display:none;" id="step4">
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 15px;">Vérifiez les
+                        informations avant de valider.</p>
+                    <div class="summary-card" id="orderSummary">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px;">
+                        <i class="fas fa-check-circle"></i> Confirmer la Commande
+                    </button>
+                </div>
+
+                <div style="display: flex; justify-content: center; margin-top: 40px; gap: 20px;">
+                    <button type="button" class="btn btn-secondary" id="prevBtn"
+                        style="visibility: hidden; min-width: 150px;">Précédent</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn"
+                        style="min-width: 150px;">Suivant</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Detail Modal -->
+    <div class="modal" id="detailModal">
+        <div class="modal-content" style="max-width: 450px;">
+            <span class="close-modal" id="closeDetailModal">&times;</span>
+            <div id="detailContent">
+                <!-- Injected via JS -->
+            </div>
+
+            <div id="statusControl"
+                style="margin-top: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 8px;">
+                <label style="font-size: 0.8rem; color: #888; display: block; margin-bottom: 8px;">Statut de
+                    Production</label>
+                <div style="display: flex; gap: 8px;">
+                    <button class="status-btn" data-status="Accepted"
+                        style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #444; background: transparent; color: white; cursor: pointer; font-size: 0.8rem;">À
+                        Faire</button>
+                    <button class="status-btn" data-status="In Progress"
+                        style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #444; background: transparent; color: white; cursor: pointer; font-size: 0.8rem;">En
+                        Cours</button>
+                    <button class="status-btn" data-status="Ready"
+                        style="flex: 1; padding: 10px; border-radius: 6px; border: 1px solid #444; background: transparent; color: white; cursor: pointer; font-size: 0.8rem;">Prêt</button>
+                </div>
+            </div>
+
+            <div style="margin-top: 20px; display: flex; gap: 10px;">
+                <button id="editOrderBtn" class="btn btn-primary"
+                    style="flex: 1; padding: 12px; font-size: 0.8rem;">Modifier Commande</button>
+                <button id="deleteOrderBtn" class="btn btn-secondary"
+                    style="flex: 0 0 120px; border-color: #E85D04; color: #E85D04; padding: 12px; font-size: 0.8rem;">Supprimer</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Item Edit Modal (Sub-modal) -->
+    <div class="modal" id="itemEditModal">
+        <div class="modal-content"
+            style="max-width: 450px; border: 1px solid var(--color-primary); background: #1a1a1a;">
+            <span class="close-modal"
+                onclick="document.getElementById('itemEditModal').style.display='none'">&times;</span>
+            <h2 style="margin-bottom: 20px; font-size: 1.2rem;">Modifier l'article</h2>
+            <form id="itemEditForm">
+                <input type="hidden" id="editItemIndex">
+
+                <!-- Category Support -->
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label>Catégorie du produit</label>
+                    <div style="display: flex; gap: 10px; margin-top: 8px;">
+                        <button type="button" class="category-chip active" id="catBtnGateaux"
+                            onclick="window.modals.switchItemCategory('gateaux')">Gâteaux</button>
+                        <button type="button" class="category-chip" id="catBtnSalgados"
+                            onclick="window.modals.switchItemCategory('salgados')">Salés (Salgados)</button>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label>Nom de l'article</label>
+                    <input type="text" id="editItemName" required>
+                </div>
+                <div class="form-group" style="width: 100px;">
+                    <label>Quantité</label>
+                    <input type="number" id="editItemQuantity" min="1" required>
+                </div>
+
+                <!-- SECTION: GATEAUX -->
+                <div id="sectionGateaux">
+                    <div class="form-group">
+                        <label for="editGateauBase">Saveur de base (Goût)</label>
+                        <select id="editGateauBase"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editGateauGarniture">Garniture</label>
+                        <select id="editGateauGarniture"></select>
+                    </div>
+                    <div class="form-group">
+                        <label for="editGateauMousse">Mousse</label>
+                        <select id="editGateauMousse"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Type de finition (Prix)</label>
+                        <div style="display: flex; gap: 10px; margin-top: 8px;" id="finitionContainer">
+                            <!-- Populated via JS -->
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="editItemMessage">Inscription (Plaque chocolat +2€)</label>
+                        <input type="text" id="editItemMessage" placeholder="Ex: Joyeux Anniversaire Marie">
+                    </div>
+                    <div class="form-group">
+                        <label>Suppléments</label>
+                        <input type="text" id="editItemSupplements" placeholder="Ex: Bougies, Impression photo, etc.">
+                    </div>
+                </div>
+
+                <!-- SECTION: SALGADOS -->
+                <div id="sectionSalgados" style="display:none;">
+                    <div class="form-group">
+                        <label for="editSaléType">Type de Salé</label>
+                        <select id="editSaléType"></select>
+                    </div>
+                    <div style="display: flex; gap: 20px; align-items: center; margin-top: 10px;">
+                        <label class="option-chip">
+                            <input type="checkbox" id="editSaléFrit" value="Frit">
+                            <span><i class="fas fa-fire"></i> Frit (+1€)</span>
+                        </label>
+                        <label class="option-chip">
+                            <input type="checkbox" id="editSaléChef" value="Choix du restaurant">
+                            <span style="border-color: var(--color-secondary); color: var(--color-secondary);"><i
+                                    class="fas fa-utensils"></i> Choix Restaurant</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Common Section -->
+                <div class="form-group" style="margin-top:20px;">
+                    <label>Instructions ou Commentaires spécifiques</label>
+                    <textarea id="editItemInstructions" rows="3"
+                        placeholder="Ex: Pas trop sucré, livrer dans une boîte séparée..."></textarea>
+                </div>
+                <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 20px;">Enregistrer
+                    l'article</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Styles for Wizard Item Cards -->
+    <style>
+        .wizard-item-card {
+            background: #1a1a1a;
+            border: 1px solid rgba(212, 175, 55, 0.4);
+            border-radius: 12px;
+            margin-bottom: 20px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+        }
+
+        .item-card-header {
+            background: rgba(212, 175, 55, 0.15);
+            padding: 10px 15px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(212, 175, 55, 0.2);
+        }
+
+        .item-card-number {
+            font-weight: 600;
+            color: var(--color-primary);
+            font-size: 0.9rem;
+        }
+
+        .btn-remove-item {
+            background: none;
+            border: none;
+            color: #E85D04;
+            cursor: pointer;
+            padding: 5px;
+            transition: transform 0.2s;
+        }
+
+        .btn-remove-item:hover {
+            transform: scale(1.2);
+        }
+
+        .item-card-body {
+            padding: 15px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .item-field {
+            flex: 1;
+        }
+
+        .item-field:last-child {
+            flex: 0 0 80px;
+        }
+
+        .item-field label {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .item-field input {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+        }
+
+        .item-field input:focus {
+            border-color: var(--color-primary);
+            outline: none;
+            box-shadow: 0 0 0 2px rgba(212, 175, 55, 0.2);
+        }
+
+        #wizardItemsList {
+            max-height: 300px;
+            overflow-y: auto;
+            padding-right: 5px;
+        }
+    </style>
+    <script src="js/utils.js"></script>
+    <script src="js/api.js"></script>
+    <script src="js/calendar.js"></script>
+    <script src="js/menu.js"></script>
+    <script src="js/modals.js"></script>
+    <script src="js/app.js"></script>
+
+</body>
+
+</html>

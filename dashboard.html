@@ -20,7 +20,6 @@
         <aside class="sidebar">
             <div class="sidebar-header">
                 <h2>Douce Tentation</h2>
-                <span class="sidebar-subtitle">MANAGER</span>
             </div>
 
             <nav class="sidebar-nav">
@@ -43,10 +42,10 @@
             </nav>
 
             <div class="sidebar-footer">
-                <button id="simulateGloriaBtn" class="sidebar-btn">
+                <button id="simulateGloriaBtn" class="sidebar-btn" style="width: 100%; margin-bottom: 10px;">
                     <i class="fas fa-sync"></i> Sync
                 </button>
-                <a href="index.html" class="sidebar-btn logout">
+                <a href="index.html" class="sidebar-btn logout" style="width: 100%; text-decoration: none;">
                     <i class="fas fa-sign-out-alt"></i> Retour Site
                 </a>
             </div>
@@ -56,8 +55,9 @@
         <main class="main-content">
             <div class="calendar-header">
                 <div>
-                    <h1>Calendrier de Production</h1>
-                    <p class="text-muted">Gérez vos commandes spéciales et la production hebdomadaire.</p>
+                    <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Calendrier de Production</h1>
+                    <p style="color: var(--color-text-muted); font-weight: 300; letter-spacing: 0.5px;">Gérez vos
+                        commandes spéciales et la production hebdomadaire.</p>
                 </div>
                 <button class="btn btn-primary" id="newOrderBtn">
                     <i class="fas fa-plus"></i> Nouvelle Commande
@@ -79,9 +79,10 @@
             <h2 style="margin-bottom: 20px;">Nouvelle Commande Spéciale</h2>
 
             <div class="step-wizard">
-                <div class="step active">1</div>
-                <div class="step">2</div>
-                <div class="step">3</div>
+                <div class="step active" data-step="0">1 <span class="step-label">Produit</span></div>
+                <div class="step" data-step="1">2 <span class="step-label">Options</span></div>
+                <div class="step" data-step="2">3 <span class="step-label">Client</span></div>
+                <div class="step" data-step="3">4 <span class="step-label">Résumé</span></div>
             </div>
 
             <form id="orderForm">
@@ -90,6 +91,7 @@
                     <div class="form-group">
                         <label>Type de Gâteau</label>
                         <select id="cakeType" required>
+                            <option value="">Sélectionnez un gâteau</option>
                             <option value="Fraisier">Fraisier</option>
                             <option value="ForetNoire">Forêt Noire</option>
                             <option value="MousseChoco">Mousse 3 Chocolats</option>
@@ -113,23 +115,26 @@
                 <div class="form-step" style="display:none;" id="step2">
                     <div class="form-group">
                         <label>Inscription (Plaque chocolat +2€)</label>
-                        <input type="text" id="cakeMessage" placeholder="ex: Joyeux Anniversaire Léo"
-                            style="background:var(--color-bg-body); color:var(--color-text-main);">
+                        <input type="text" id="cakeMessage" placeholder="ex: Joyeux Anniversaire Léo">
                     </div>
 
                     <div class="form-group">
                         <label>Suppléments & Options</label>
                         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                            <label
+                                style="font-weight: 400; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <input type="checkbox" id="optCandles" value="Bougies"> Bougies (+3€)
                             </label>
-                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                            <label
+                                style="font-weight: 400; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <input type="checkbox" id="optPhoto" value="Impression Photo"> Impression Photo (+10€)
                             </label>
-                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                            <label
+                                style="font-weight: 400; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <input type="checkbox" id="optGluten" value="Sans Gluten"> Sans Gluten
                             </label>
-                            <label style="font-weight: 400; display: flex; align-items: center; gap: 8px;">
+                            <label
+                                style="font-weight: 400; display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                 <input type="checkbox" id="optLactose" value="Sans Lactose"> Sans Lactose
                             </label>
                         </div>
@@ -137,8 +142,7 @@
 
                     <div class="form-group">
                         <label>Notes / Allergies</label>
-                        <textarea id="cakeNotes" rows="3"
-                            style="background:var(--color-bg-body); color:var(--color-text-main);"></textarea>
+                        <textarea id="cakeNotes" rows="3"></textarea>
                     </div>
                 </div>
 
@@ -154,21 +158,31 @@
                     </div>
                     <div class="form-group">
                         <label>Date & Heure de Retrait</label>
-                        <!-- For simplicity, we assume the date matches one of the visible days, but in real app this is a datepicker -->
-                        <select id="pickupDay" required>
-                            <!-- JS will populate -->
-                        </select>
-                        <input type="time" id="pickupTime" required value="10:00">
+                        <div style="display: flex; gap: 10px;">
+                            <select id="pickupDay" required style="flex: 2;">
+                                <!-- JS will populate with visible week dates -->
+                            </select>
+                            <input type="time" id="pickupTime" required value="10:00" style="flex: 1;">
+                        </div>
                     </div>
-
-                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Valider la
-                        Commande</button>
                 </div>
 
-                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                <!-- Step 4: Summary -->
+                <div class="form-step" style="display:none;" id="step4">
+                    <p style="color: var(--color-text-muted); font-size: 0.9rem; margin-bottom: 15px;">Vérifiez les
+                        informations avant de valider.</p>
+                    <div class="summary-card" id="orderSummary">
+                        <!-- Populated by JS -->
+                    </div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 25px;">
+                        <i class="fas fa-check-circle"></i> Confirmer la Commande
+                    </button>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; margin-top: 30px; gap: 15px;">
                     <button type="button" class="btn btn-secondary" id="prevBtn"
-                        style="visibility: hidden;">Précédent</button>
-                    <button type="button" class="btn btn-primary" id="nextBtn">Suivant</button>
+                        style="visibility: hidden; flex: 1;">Précédent</button>
+                    <button type="button" class="btn btn-primary" id="nextBtn" style="flex: 1;">Suivant</button>
                 </div>
             </form>
         </div>
@@ -189,7 +203,7 @@
         </div>
     </div>
 
-    <script src="app.js?v=2"></script>
+    <script src="app.js?v=3"></script>
 </body>
 
 </html>

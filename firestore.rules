@@ -1,0 +1,10 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Allow public read/write for orders (DEMO MODE)
+    // TODO: Integrate Firebase Auth for production security
+    match /orders/{orderId} {
+      allow read, write: if true;
+    }
+  }
+}

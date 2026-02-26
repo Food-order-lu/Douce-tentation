@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
 
     // --- AUTH CHECK ---
     if (!localStorage.getItem('isAuthenticated')) {
@@ -17,12 +17,88 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // --- Configuration ---
+    const API_BASE = '/api';
     let currentDate = new Date(); // Start from today
 
     // --- State ---
-    let orders = JSON.parse(localStorage.getItem('douceTentationOrders')) || [
-        { id: 101, type: 'Fraisier', size: '6 parts', client: 'M. Dupont', time: '10:00', date: new Date().toISOString().split('T')[0], source: 'manual' },
-    ];
+    let orders = [];
+
+    // --- API Helper Functions ---
+    async function fetchOrders() {
+        console.log('📡 Tentative de chargement des commandes depuis l\'API...');
+        try {
+            const res = await fetch(`${API_BASE}/orders`, {
+                headers: { 'Bypass-Tunnel-Reminder': 'true' }
+            });
+            if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+            orders = await res.json();
+            console.log('✅ Commandes chargées:', orders.length, 'trouvées');
+            return orders;
+        } catch (error) {
+            console.error('❌ Erreur API, passage sur LocalStorage:', error);
+            const saved = localStorage.getItem('douceTentationOrders');
+            orders = saved ? JSON.parse(saved) : [];
+            return orders;
+        }
+    }
+
+    async function createOrder(orderData) {
+        try {
+            const res = await fetch(`${API_BASE}/orders`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Bypass-Tunnel-Reminder': 'true'
+                },
+                body: JSON.stringify(orderData)
+            });
+            const newOrder = await res.json();
+            orders.push(newOrder);
+            return newOrder;
+        } catch (error) {
+            console.error('Erreur création commande:', error);
+            orderData.id = Date.now();
+            orders.push(orderData);
+            return orderData;
+        }
+    }
+
+    async function updateOrder(id, orderData) {
+        try {
+            const res = await fetch(`${API_BASE}/orders/${id}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Bypass-Tunnel-Reminder': 'true'
+                },
+                body: JSON.stringify(orderData)
+            });
+            const updatedOrder = await res.json();
+            const idx = orders.findIndex(o => o.id == id);
+            if (idx !== -1) orders[idx] = updatedOrder;
+            return updatedOrder;
+        } catch (error) {
+            console.error('Erreur modification commande:', error);
+            return null;
+        }
+    }
+
+    async function deleteOrder(id) {
+        try {
+            await fetch(`${API_BASE}/orders/${id}`, {
+                method: 'DELETE',
+                headers: { 'Bypass-Tunnel-Reminder': 'true' }
+            });
+            orders = orders.filter(o => o.id != id);
+            return true;
+        } catch (error) {
+            console.error('Erreur suppression commande:', error);
+            return false;
+        }
+    }
+
+    // Load orders from API
+    await fetchOrders();
 
     // --- DOM Elements ---
     const calendarGrid = document.getElementById('calendarGrid');
@@ -34,7 +110,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Wizard
     const orderForm = document.getElementById('orderForm');
-    const steps = [document.getElementById('step1'), document.getElementById('step2'), document.getElementById('step3')];
+    const steps = [
+        document.getElementById('step1'), 
+        document.getElementById('step2'), 
+        document.getElementById('step3'),
+        document.getElementById('step4')
+    ];
+    const orderSummary = document.getElementById('orderSummary');
     const nextBtn = document.getElementById('nextBtn');
     const prevBtn = document.getElementById('prevBtn');
     let currentStep = 0;
@@ -48,25 +130,51 @@ document.addEventListener('DOMContentLoaded', () => {
             step.style.display = idx === currentStep ? 'block' : 'none';
         });
 
-        // Update Steps indicators
         const indicators = document.querySelectorAll('.step');
         indicators.forEach((ind, idx) => {
             ind.classList.toggle('active', idx === currentStep);
+            ind.classList.toggle('completed', idx < currentStep);
         });
 
-        // Update Buttons
         prevBtn.style.visibility = currentStep === 0 ? 'hidden' : 'visible';
 
         if (currentStep === steps.length - 1) {
             nextBtn.style.display = 'none';
+            generateSummary();
         } else {
             nextBtn.style.display = 'inline-block';
             nextBtn.innerText = 'Suivant';
         }
     }
 
+    function generateSummary() {
+        const type = document.getElementById('cakeType').value;
+        const size = document.getElementById('cakeSize').value;
+        const client = document.getElementById('clientName').value;
+        const phone = document.getElementById('clientPhone').value;
+        const date = document.getElementById('pickupDay').value;
+        const time = document.getElementById('pickupTime').value;
+        const notes = document.getElementById('cakeNotes').value;
+
+        const supplements = [];
+        if (document.getElementById('optCandles').checked) supplements.push('Bougies');
+        if (document.getElementById('optPhoto').checked) supplements.push('Impression Photo');
+        if (document.getElementById('optGluten').checked) supplements.push('Sans Gluten');
+        if (document.getElementById('optLactose').checked) supplements.push('Sans Lactose');
+        const msg = document.getElementById('cakeMessage').value;
+
+        orderSummary.innerHTML = `
+            <div class="summary-item"><span class="summary-label">Produit:</span> <span class="summary-value">${type} (${size} pers.)</span></div>
+            <div class="summary-item"><span class="summary-label">Client:</span> <span class="summary-value">${client}</span></div>
+            <div class="summary-item"><span class="summary-label">Contact:</span> <span class="summary-value">${phone}</span></div>
+            <div class="summary-item"><span class="summary-label">Retrait:</span> <span class="summary-value">${date} à ${time}</span></div>
+            ${supplements.length > 0 ? `<div class="summary-item"><span class="summary-label">Options:</span> <span class="summary-value">${supplements.join(', ')}</span></div>` : ''}
+            ${msg ? `<div class="summary-item"><span class="summary-label">Message:</span> <span class="summary-value">"${msg}"</span></div>` : ''}
+            ${notes ? `<div class="summary-item"><span class="summary-label">Notes:</span> <span class="summary-value">${notes}</span></div>` : ''}
+        `;
+    }
+
     nextBtn.onclick = () => {
-        // Simple validation for required fields in current step
         const inputs = steps[currentStep].querySelectorAll('input[required], select[required]');
         let valid = true;
         inputs.forEach(input => {
@@ -91,13 +199,14 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
+    // --- Modal Logic ---
     newOrderBtn.onclick = () => {
         orderForm.reset();
-        delete orderForm.dataset.editId;
         currentStep = 0;
         updateWizard();
-        populateDaySelect();
-        modal.style.display = 'flex';
+        modal.style.display = 'block';
+        delete orderForm.dataset.editId;
+        populatePickupDays();
     };
 
     closeModalBtn.onclick = () => {
@@ -109,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
         if (event.target == detailModal) detailModal.style.display = 'none';
     };
 
-    // --- Navigation Buttons (To be added securely) ---
+    // --- Navigation Buttons ---
     const headerDiv = document.querySelector('.calendar-header > div');
     const navDiv = document.createElement('div');
     navDiv.className = 'calendar-nav';
@@ -129,19 +238,19 @@ document.addEventListener('DOMContentLoaded', () => {
     };
 
     // --- Functions ---
-
     function getStartOfWeek(date) {
         const d = new Date(date);
         const day = d.getDay();
-        const diff = d.getDate() - day + (day === 0 ? -6 : 1); // Adjust when day is Sunday
+        const diff = d.getDate() - day + (day === 0 ? -6 : 1);
         return new Date(d.setDate(diff));
     }
 
     function renderCalendar() {
+        console.log('📅 Rendu du calendrier à partir de:', currentDate.toDateString());
         calendarGrid.innerHTML = '';
         const startOfWeek = getStartOfWeek(currentDate);
+        console.log('📅 Début de semaine (Lundi):', startOfWeek.toDateString());
 
-        // Update Title
         const endOfWeek = new Date(startOfWeek);
         endOfWeek.setDate(endOfWeek.getDate() + 6);
         const options = { month: 'long', day: 'numeric' };
@@ -151,11 +260,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const dayDate = new Date(startOfWeek);
             dayDate.setDate(startOfWeek.getDate() + i);
             const dateStr = dayDate.toISOString().split('T')[0];
-            const isToday = new Date().toISOString().split('T')[0] === dateStr;
+            const isToday = new Date().toLocaleDateString('en-CA') === dateStr;
 
             const col = document.createElement('div');
             col.className = 'day-column';
-            if (isToday) col.style.border = '2px solid var(--color-primary)';
+            if (isToday) col.classList.add('is-today');
 
             col.innerHTML = `
                 <div class="day-header">
@@ -164,7 +273,6 @@ document.addEventListener('DOMContentLoaded', () => {
                 </div>
             `;
 
-            // Filter orders
             const dayOrders = orders.filter(o => o.date === dateStr);
             dayOrders.sort((a, b) => a.time.localeCompare(b.time));
 
@@ -181,7 +289,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     sourceLabel = '<span style="color:#D4AF37;"><i class="fas fa-birthday-cake"></i> Gâteau Web</span>';
                 }
 
-                // Supplements summary
                 let supplementsHTML = '';
                 if (order.supplements && order.supplements.length > 0) {
                     supplementsHTML = `<div style="font-size:0.75rem; color:#888; border-top:1px solid #eee; margin-top:4px; padding-top:2px;">+ ${order.supplements.join(', ')}</div>`;
@@ -203,7 +310,22 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     }
 
-    // --- Detail Modal Elements ---
+    function populatePickupDays() {
+        const pickupDaySelect = document.getElementById('pickupDay');
+        pickupDaySelect.innerHTML = '';
+        const startOfWeek = getStartOfWeek(currentDate);
+
+        for (let i = 0; i < 7; i++) {
+            const dayDate = new Date(startOfWeek);
+            dayDate.setDate(startOfWeek.getDate() + i);
+            const dateStr = dayDate.toISOString().split('T')[0];
+            const option = document.createElement('option');
+            option.value = dateStr;
+            option.innerText = dayDate.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric', month: 'long' });
+            pickupDaySelect.appendChild(option);
+        }
+    }
+
     const detailModal = document.getElementById('detailModal');
     const closeDetailModalBtn = document.getElementById('closeDetailModal');
     const detailContent = document.getElementById('detailContent');
@@ -211,7 +333,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const deleteOrderBtn = document.getElementById('deleteOrderBtn');
     let currentSelectedOrderId = null;
 
-    // --- Detail Logic ---
     function showOrderDetails(order) {
         currentSelectedOrderId = order.id;
 
@@ -229,105 +350,58 @@ document.addEventListener('DOMContentLoaded', () => {
                 <p><i class="fas fa-user" style="width:20px; color:#888;"></i> <strong>${order.client}</strong></p>
                 <p><i class="fas fa-phone" style="width:20px; color:#888;"></i> ${order.phone || 'Non renseigné'}</p>
                 <p><i class="fas fa-clock" style="width:20px; color:#888;"></i> ${order.time}</p>
+                <p><i class="fas fa-calendar" style="width:20px; color:#888;"></i> ${order.date}</p>
+                <p><i class="fas fa-sticky-note" style="width:20px; color:#888;"></i> ${order.notes || 'Pas de notes'}</p>
             </div>
-            ${supplementsHTML ? `<div style="margin-bottom:15px; font-size:0.9rem;">${supplementsHTML}</div>` : ''}
-            ${order.notes ? `<div style="margin-bottom:15px; font-size:0.9rem;"><p><strong>Note:</strong> ${order.notes}</p></div>` : ''}
+            ${supplementsHTML}
         `;
 
-        detailModal.style.display = 'flex';
+        detailModal.style.display = 'block';
     }
 
-    closeDetailModalBtn.onclick = () => { detailModal.style.display = 'none'; };
+    closeDetailModalBtn.onclick = () => {
+        detailModal.style.display = 'none';
+    };
 
-    // --- Helper Functions ---
-    function populateDaySelect() {
-        const select = document.getElementById('pickupDay');
-        select.innerHTML = '';
-        const startOfWeek = getStartOfWeek(currentDate);
-
-        for (let i = 0; i < 7; i++) {
-            const d = new Date(startOfWeek);
-            d.setDate(startOfWeek.getDate() + i);
-            const val = d.toISOString().split('T')[0];
-
-            const option = document.createElement('option');
-            option.value = val;
-            option.text = d.toLocaleDateString('fr-FR', { weekday: 'long', day: 'numeric' });
-            select.appendChild(option);
-        }
-    }
-
-    // --- Edit Logic ---
     editOrderBtn.onclick = () => {
-        const order = orders.find(o => o.id === currentSelectedOrderId);
+        const order = orders.find(o => o.id == currentSelectedOrderId);
         if (!order) return;
 
-        detailModal.style.display = 'none'; // Close detail
-
-        // Open Form in Edit Mode
-        modal.style.display = 'flex';
+        detailModal.style.display = 'none';
+        modal.style.display = 'block';
         currentStep = 0;
         updateWizard();
-        populateDaySelect();
 
-        // Pre-fill form
         document.getElementById('cakeType').value = order.type;
-
-        // Handle Size Matching (e.g. "6 parts" -> "6")
-        let sizeVal = order.size.split(' ')[0]; // Try taking first part "6"
-        if (sizeVal === 'Std') sizeVal = '4'; // Fallback for snacking
-        // If exact match not found in select, it might default or stay empty, 
-        // but this heuristic covers "6 parts", "8 pers", "20+".
-        const sizeSelect = document.getElementById('cakeSize');
-        if ([...sizeSelect.options].some(o => o.value === sizeVal)) {
-            sizeSelect.value = sizeVal;
-        } else {
-            // Try parseInt fallback
-            sizeSelect.value = parseInt(order.size) || '4';
-        }
-
+        document.getElementById('cakeSize').value = order.size;
         document.getElementById('clientName').value = order.client;
-        document.getElementById('clientPhone').value = order.phone || '';
+        document.getElementById('clientPhone').value = order.phone;
         document.getElementById('pickupDay').value = order.date;
         document.getElementById('pickupTime').value = order.time;
-        document.getElementById('cakeNotes').value = order.notes || '';
+        document.getElementById('cakeNotes').value = order.notes;
 
-        // Reset and check supplements
-        ['optCandles', 'optPhoto', 'optGluten', 'optLactose'].forEach(id => document.getElementById(id).checked = false);
-        document.getElementById('cakeMessage').value = '';
+        document.getElementById('optCandles').checked = order.supplements.includes('Bougies');
+        document.getElementById('optPhoto').checked = order.supplements.includes('Impression Photo');
+        document.getElementById('optGluten').checked = order.supplements.includes('Sans Gluten');
+        document.getElementById('optLactose').checked = order.supplements.includes('Sans Lactose');
 
-        if (order.supplements) {
-            if (order.supplements.includes('Bougies')) document.getElementById('optCandles').checked = true;
-            if (order.supplements.includes('Impression Photo')) document.getElementById('optPhoto').checked = true;
-            if (order.supplements.includes('Sans Gluten')) document.getElementById('optGluten').checked = true;
-            if (order.supplements.includes('Sans Lactose')) document.getElementById('optLactose').checked = true;
+        populatePickupDays();
+        document.getElementById('pickupDay').value = order.date;
 
-            // Extract message
-            const plaque = order.supplements.find(s => s.startsWith('Plaque "'));
-            if (plaque) {
-                document.getElementById('cakeMessage').value = plaque.replace('Plaque "', '').replace('"', '');
-            }
-        }
-
-        // Tag form as editing
         orderForm.dataset.editId = order.id;
     };
 
-    // --- Delete Logic ---
-    deleteOrderBtn.onclick = () => {
+    deleteOrderBtn.onclick = async () => {
         if (confirm('Voulez-vous vraiment supprimer cette commande ?')) {
-            orders = orders.filter(o => o.id !== currentSelectedOrderId);
-            localStorage.setItem('douceTentationOrders', JSON.stringify(orders));
+            await deleteOrder(currentSelectedOrderId);
             renderCalendar();
             detailModal.style.display = 'none';
         }
     };
 
-    // --- Form Submission (Updated for Edit) ---
-    orderForm.addEventListener('submit', (e) => {
+    orderForm.addEventListener('submit', async (e) => {
         e.preventDefault();
 
-        // Collect Supplements
         const supplements = [];
         if (document.getElementById('optCandles').checked) supplements.push('Bougies');
         if (document.getElementById('optPhoto').checked) supplements.push('Impression Photo');
@@ -350,66 +424,30 @@ document.addEventListener('DOMContentLoaded', () => {
         };
 
         if (orderForm.dataset.editId) {
-            // Update Existing
-            const idx = orders.findIndex(o => o.id == orderForm.dataset.editId);
-            if (idx !== -1) {
-                orders[idx] = { ...orders[idx], ...orderData };
-                alert('Commande modifiée !');
-            }
-            delete orderForm.dataset.editId; // Clear edit mode
+            await updateOrder(orderForm.dataset.editId, orderData);
+            alert('Commande modifiée !');
+            delete orderForm.dataset.editId;
         } else {
-            // Create New
-            orders.push({ id: Date.now(), ...orderData });
+            await createOrder(orderData);
             alert('Commande ajoutée !');
         }
 
-        localStorage.setItem('douceTentationOrders', JSON.stringify(orders));
         renderCalendar();
         modal.style.display = 'none';
     });
 
-    // --- GloriaFood Simulation ---
-    simulateGloriaBtn.addEventListener('click', () => {
-        const startOfWeek = getStartOfWeek(currentDate);
-        const randomDayOffset = Math.floor(Math.random() * 7);
-        const targetDate = new Date(startOfWeek);
-        targetDate.setDate(targetDate.getDate() + randomDayOffset);
-        const dateStr = targetDate.toISOString().split('T')[0];
+    simulateGloriaBtn.addEventListener('click', async () => {
+        const btnText = simulateGloriaBtn.innerHTML;
+        simulateGloriaBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Syncing...';
 
-        const isCake = Math.random() > 0.5;
-        let type, source, notes, supps = [];
-
-        if (isCake) {
-            const cakeTypes = ['Gâteau Personnalisé', 'Pièce Montée', 'Tarte aux Fruits'];
-            type = cakeTypes[Math.floor(Math.random() * cakeTypes.length)];
-            source = 'gloria_cake';
-            notes = 'Via Web';
-            if (Math.random() > 0.7) supps.push('Bougies');
-        } else {
-            const snackTypes = ['Sandwich Jambon', 'Croissant x4', 'Pain Surprise'];
-            type = snackTypes[Math.floor(Math.random() * snackTypes.length)];
-            source = 'gloria_snack';
-            notes = 'Via Web';
+        try {
+            await fetchOrders();
+            renderCalendar();
+            simulateGloriaBtn.innerHTML = '<i class="fas fa-check"></i> Synced !';
+        } catch (error) {
+            simulateGloriaBtn.innerHTML = '<i class="fas fa-times"></i> Erreur';
         }
 
-        const gloriaOrder = {
-            id: Date.now(),
-            type: type,
-            size: isCake ? '8 pers' : 'Std',
-            client: 'Commande Web #' + Math.floor(Math.random() * 1000),
-            date: dateStr,
-            time: '12:00',
-            source: source,
-            notes: notes,
-            supplements: supps
-        };
-
-        orders.push(gloriaOrder);
-        localStorage.setItem('douceTentationOrders', JSON.stringify(orders));
-        renderCalendar();
-
-        const btnText = simulateGloriaBtn.innerHTML;
-        simulateGloriaBtn.innerHTML = '<i class="fas fa-check"></i> Reçu !';
         setTimeout(() => simulateGloriaBtn.innerHTML = btnText, 2000);
     });
 

@@ -1,0 +1,32 @@
+{
+  "name": "douce-tentation",
+  "version": "2.0.0",
+  "description": "Production calendar for Douce Tentation bakery with GloriaFood integration",
+  "main": "src/server.js",
+  "scripts": {
+    "start": "node src/server.js",
+    "dev": "node src/server.js",
+    "start:legacy": "node server.js",
+    "test": "echo \"No tests configured\" && exit 0"
+  },
+  "keywords": [
+    "bakery",
+    "calendar",
+    "gloriafood",
+    "orders"
+  ],
+  "author": "Douce Tentation",
+  "license": "UNLICENSED",
+  "private": true,
+  "dependencies": {
+    "@supabase/supabase-js": "^2.97.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "firebase-admin": "^13.6.1",
+    "node-fetch": "^2.7.0"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}

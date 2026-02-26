@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Douce Tentation | Boulangerie Artisanale Diekirch</title>
+    <link rel="stylesheet" href="css/style.css">
+
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap"
+        rel="stylesheet">
+
+    <!-- Icons -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body>
+
+    <header>
+        <div class="container">
+            <nav>
+                <div class="logo-container">
+                    <img src="assets/logo.jpg" alt="Logo Douce Tentation" class="logo-img">
+                    <a href="#" class="logo-text">Douce Tentation</a>
+                </div>
+                <div class="nav-links">
+                    <a href="#about">Histoire</a>
+                    <a href="#products">Créations</a>
+                    <a href="#contact">Contact</a>
+                    <a href="login.html"
+                        style="color: var(--color-primary); border: 1px solid var(--color-primary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">
+                        <i class="fas fa-lock"></i> Staff
+                    </a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <section class="hero">
+        <div class="container hero-content">
+            <h1 class="reveal-up">L'Authenticité du Goût</h1>
+            <p class="reveal-up delay-1">Découvrez nos pains au levain, viennoiseries pur beurre et pâtisseries fines
+                fabriqués chaque matin avec passion à Diekirch.</p>
+            <div class="hero-btns reveal-up delay-2">
+                <a href="#" class="btn btn-primary" onclick="alert('Ouverture GloriaFood Snacking...')">
+                    <i class="fas fa-utensils"></i> Déjeuner & Pain
+                </a>
+                <a href="#" class="btn btn-secondary" onclick="alert('Ouverture GloriaFood Gâteaux...')">
+                    <i class="fas fa-birthday-cake"></i> Gâteaux & Traiteur
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="about-section">
+        <div class="container">
+            <div class="about-grid">
+                <div class="about-text reveal-left">
+                    <span class="section-subtitle">Notre Histoire</span>
+                    <h2>Artisans par Passion</h2>
+                    <p>Depuis plus de 20 ans, Douce Tentation perpétue la tradition boulangère luxembourgeoise au cœur
+                        de Diekirch. Pour nous, chaque miche de pain raconte une histoire de patience, de sélection
+                        rigoureuse des grains et de respect du temps de levée.</p>
+                    <p>Notre engagement ? N'utiliser que des ingrédients locaux et de saison pour vous offrir une
+                        expérience gustative authentique et inoubliable.</p>
+                </div>
+                <div class="about-image reveal-right">
+                    <div class="image-wrapper">
+                        <img src="https://images.unsplash.com/photo-1509440159596-0249088772ff?ixlib=rb-1.2.1&auto=format&fit=crop&w=1000&q=80"
+                            alt="Boulangerie Artisanale">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="products" class="products-section">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-subtitle">Nos Créations</span>
+                <h2>Un Savoir-Faire d'Exception</h2>
+                <p>Découvrez l'excellence de nos produits artisanaux</p>
+            </div>
+
+            <div class="products-grid">
+                <!-- Product 1 -->
+                <div class="product-card reveal-up delay-1">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1555507036-ab1f4038808a?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            alt="Pain Artisanal">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pains Artisanaux</h3>
+                        <p>Farines de meule et fermentation lente pour un goût incomparable.</p>
+                        <div class="product-footer">
+                            <span class="price">À partir de 2.50€</span>
+                            <a href="#" class="view-more">Détails <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card reveal-up delay-2">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1517433670267-08bbd4be890f?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            alt="Pâtisserie Fine">
+                    </div>
+                    <div class="product-info">
+                        <h3>Pâtisseries Fines</h3>
+                        <p>L'équilibre parfait entre tradition et modernité.</p>
+                        <div class="product-footer">
+                            <span class="price">À partir de 4.20€</span>
+                            <a href="#" class="view-more">Détails <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card reveal-up delay-3">
+                    <div class="product-image">
+                        <img src="https://images.unsplash.com/photo-1578985545062-69928b1d9587?ixlib=rb-1.2.1&auto=format&fit=crop&w=800&q=80"
+                            alt="Gâteau de Célébration">
+                    </div>
+                    <div class="product-info">
+                        <h3>Événementiel</h3>
+                        <p>Des créations sur mesure pour vos moments inoubliables.</p>
+                        <div class="product-footer">
+                            <span class="price">Sur Devis</span>
+                            <a href="#" class="view-more">Détails <i class="fas fa-arrow-right"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer style="background: var(--color-secondary); color: white; padding: 60px 0; text-align: center;">
+        <div class="container">
+            <h2 style="color: var(--color-primary); margin-bottom: 20px;">Douce Tentation</h2>
+            <p>12 Rue de la Gare, Diekirch, Luxembourg</p>
+            <p>Tel: +352 12 34 56</p>
+            <div style="margin-top: 30px; font-size: 0.9rem; opacity: 0.6;">
+                &copy; 2024 Douce Tentation. Tous droits réservés.
+            </div>
+        </div>
+    </footer>
+
+    <script src="js/index_animation.js"></script>
+</body>
+
+</html>
