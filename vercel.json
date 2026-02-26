@@ -23,6 +23,6 @@
     ],
     "env": {
         "NODE_ENV": "production",
-        "USE_FIRESTORE": "true"
+        "DB_TYPE": "supabase"
     }
 }
