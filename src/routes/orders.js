@@ -93,10 +93,10 @@ router.get('/backup/download', async (req, res) => {
 });
 
 /**
- * POST /api/orders/sync
+ * GET/POST /api/orders/sync
  * Manually trigger a sync with GloriaFood
  */
-router.post('/sync', async (req, res) => {
+router.all('/sync', async (req, res) => {
     console.log('🔄 Manual Sync triggered');
     try {
         const rawOrders = await gloriaFoodService.pollOrders();
