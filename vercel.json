@@ -14,11 +14,5 @@
     "env": {
         "NODE_ENV": "production",
         "DB_TYPE": "supabase"
-    },
-    "crons": [
-        {
-            "path": "/api/orders/sync",
-            "schedule": "*/10 * * * *"
-        }
-    ]
+    }
 }
