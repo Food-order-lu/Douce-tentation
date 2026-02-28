@@ -317,6 +317,9 @@ nav {
     grid-template-columns: 1fr 1fr;
     gap: 80px;
     align-items: center;
+    max-width: 1000px;
+    /* More centered container */
+    margin: 0 auto;
 }
 
 .section-subtitle {
@@ -329,6 +332,15 @@ nav {
     margin-bottom: 15px;
 }
 
+.about-text {
+    text-align: center;
+}
+
+.about-text .section-subtitle {
+    margin-left: auto;
+    margin-right: auto;
+}
+
 .about-text h2 {
     font-size: 3.5rem;
     margin-bottom: 30px;
@@ -339,7 +351,9 @@ nav {
     font-size: 1.1rem;
     color: var(--color-text-muted);
     margin-bottom: 25px;
-    max-width: 500px;
+    max-width: 600px;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .about-image .image-wrapper {
@@ -432,11 +446,12 @@ nav {
         align-items: center;
         z-index: 999;
         margin: 0;
-        gap: 25px;
+        gap: 35px;
+        /* Increased gap for better touch on phone */
         opacity: 0;
         visibility: hidden;
-        transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
-        backdrop-filter: blur(10px);
+        transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+        backdrop-filter: blur(15px);
     }
 
     .nav-links.active {
@@ -446,11 +461,14 @@ nav {
 
     .nav-links a {
         margin: 0;
-        font-size: 2rem !important;
-        font-weight: 600 !important;
+        font-size: 2.22rem !important;
+        /* Slightly larger for better readability */
+        font-weight: 500 !important;
+        font-family: 'Playfair Display', serif !important;
         color: white !important;
-        transform: translateY(20px);
-        transition: transform 0.4s ease, opacity 0.4s ease;
+        letter-spacing: 1px;
+        transform: translateY(30px);
+        transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.6s ease;
         opacity: 0;
     }
 
@@ -459,12 +477,37 @@ nav {
         opacity: 1;
     }
 
+    /* Staggered entry for links */
+    .nav-links.active a:nth-child(1) {
+        transition-delay: 0.1s;
+    }
+
+    .nav-links.active a:nth-child(2) {
+        transition-delay: 0.2s;
+    }
+
+    .nav-links.active a:nth-child(3) {
+        transition-delay: 0.3s;
+    }
+
+    .nav-links.active a:nth-child(4) {
+        transition-delay: 0.4s;
+    }
+
     .nav-links .btn-staff {
         margin-top: 15px !important;
         border: 2px solid var(--color-primary) !important;
         padding: 12px 35px !important;
         font-size: 1.2rem !important;
         border-radius: 30px !important;
+        opacity: 0;
+        transition: all 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        transition-delay: 0.5s;
+    }
+
+    .nav-links.active .btn-staff {
+        opacity: 1;
+        transform: translateY(0);
     }
 
     .mobile-menu-btn {
