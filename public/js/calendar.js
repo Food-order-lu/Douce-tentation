@@ -108,12 +108,15 @@ function createCalendar(options) {
             </div>
         `).join('');
 
+        const notesHTML = order.notes ? `<div style="font-size:0.75rem; color:#ffb703; margin-top:8px; padding:6px; background:rgba(255,183,3,0.1); border-radius:4px; border-left:2px solid #ffb703;"><i class="fas fa-comment-dots"></i> <strong>Note/Plaque:</strong> ${order.notes}</div>` : '';
+
         card.innerHTML = `
             ${statusHTML}
             <div class="order-time">${order.time}</div>
             <div class="order-client" style="font-weight:bold; font-size:1.05rem; color:var(--color-primary); margin-bottom:2px;">#${String(order.id).slice(-3)} - ${order.client}</div>
             ${itemsHTML}
             ${supplementsHTML}
+            ${notesHTML}
             ${sourceLabel ? `<div style="font-size:0.65rem; font-weight:bold; margin-top:8px; opacity:0.8; text-transform:uppercase; letter-spacing:0.5px;">${sourceLabel}</div>` : ''}
         `;
 
