@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion Staff | Douce Tentation</title>
+    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:wght@700&display=swap"
+        rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+</head>
+
+<body style="display: flex; justify-content: center; align-items: center; height: 100vh; background: #111;">
+
+    <div class="login-container"
+        style="background: #1A1A1A; padding: 40px; border-radius: 16px; width: 100%; max-width: 400px; text-align: center; border: 1px solid rgba(212, 175, 55, 0.2); box-shadow: 0 10px 40px rgba(0,0,0,0.5);">
+        <div style="margin-bottom: 30px;">
+            <i class="fas fa-lock" style="font-size: 3rem; color: #D4AF37; margin-bottom: 20px;"></i>
+            <h1 style="color: #D4AF37; font-size: 1.8rem; margin-bottom: 10px;">Espace Staff</h1>
+            <p style="color: #AAA; font-size: 0.9rem;">Veuillez vous identifier pour accéder au planning.</p>
+        </div>
+
+        <form id="loginForm">
+            <div class="form-group" style="text-align: left;">
+                <label style="color: #FFF;">Code d'accès</label>
+                <input type="password" id="password" required
+                    style="background: #222; border-color: #333; color: white; padding: 12px;">
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-top: 10px;">Se Connecter</button>
+
+            <div id="errorMsg" style="color: #E85D04; font-size: 0.9rem; margin-top: 15px; display: none;">
+                Code incorrect. Réessayez.
+            </div>
+        </form>
+
+        <div style="margin-top: 30px;">
+            <a href="index.html" style="color: #888; text-decoration: none; font-size: 0.9rem;">
+                <i class="fas fa-arrow-left"></i> Retour au site
+            </a>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const pass = document.getElementById('password').value;
+            // Simple hardcoded check for prototype
+            if (pass === 'admin' || pass === '1234') {
+                localStorage.setItem('isAuthenticated', 'true');
+                window.location.href = 'dashboard.html';
+            } else {
+                const err = document.getElementById('errorMsg');
+                err.style.display = 'block';
+                err.classList.add('shake');
+                setTimeout(() => err.classList.remove('shake'), 500);
+            }
+        });
+    </script>
+
+    <style>
+        .shake {
+            animation: shake 0.5s;
+        }
+
+        @keyframes shake {
+            0% {
+                transform: translateX(0);
+            }
+
+            25% {
+                transform: translateX(-10px);
+            }
+
+            75% {
+                transform: translateX(10px);
+            }
+
+            100% {
+                transform: translateX(0);
+            }
+        }
+    </style>
+</body>
+
+</html>

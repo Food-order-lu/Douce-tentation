@@ -1,0 +1,9 @@
+{
+    "name": "staff-portal",
+    "version": "1.0.0",
+    "description": "Staff Portal for Douce Tentation",
+    "scripts": {
+        "start": "echo 'Staff Portal is static'",
+        "build": "echo 'Building...'"
+    }
+}

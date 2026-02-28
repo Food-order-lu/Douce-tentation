@@ -1532,35 +1532,9 @@ nav {
     }
 
     .day-column {
-        min-width: 160px;
-        /* Reduced from 200px to show 4+ days on tablet */
+        min-width: 200px;
+        /* Reduced from 300px for tablet */
         scroll-snap-align: start;
-    }
-
-    .calendar-grid {
-        display: flex !important;
-        overflow-x: auto !important;
-        gap: 10px;
-        padding-bottom: 20px;
-        -webkit-overflow-scrolling: touch;
-    }
-
-    /* Make text smaller on tablet for column headers */
-    .day-column h3 {
-        font-size: 0.9rem;
-    }
-
-    /* Compact the order cards for tablet */
-    .order-card {
-        padding: 10px;
-    }
-
-    .order-time {
-        font-size: 0.75rem;
-    }
-
-    .order-id {
-        font-size: 1rem;
     }
 }
 
