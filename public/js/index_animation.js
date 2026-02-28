@@ -15,3 +15,16 @@ document.addEventListener('DOMContentLoaded', () => {
         observer.observe(el);
     });
 });
+
+function toggleMenu() {
+    const navLinks = document.getElementById('navLinks');
+    const mobileBtn = document.querySelector('.mobile-menu-btn i');
+
+    navLinks.classList.toggle('active');
+
+    if (navLinks.classList.contains('active')) {
+        mobileBtn.classList.replace('fa-bars', 'fa-times');
+    } else {
+        mobileBtn.classList.replace('fa-times', 'fa-bars');
+    }
+}

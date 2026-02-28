@@ -27,14 +27,17 @@
                     <img src="assets/logo.jpg" alt="Logo Douce Tentation" class="logo-img">
                     <a href="#" class="logo-text">Douce Tentation</a>
                 </div>
-                <div class="nav-links">
-                    <a href="#about">Histoire</a>
-                    <a href="#products">Créations</a>
-                    <a href="#contact">Contact</a>
+                <div class="nav-links" id="navLinks">
+                    <a href="#about" onclick="toggleMenu()">Histoire</a>
+                    <a href="#products" onclick="toggleMenu()">Créations</a>
+                    <a href="#contact" onclick="toggleMenu()">Contact</a>
                     <a href="login.html"
                         style="color: var(--color-primary); border: 1px solid var(--color-primary); padding: 5px 15px; border-radius: 20px; font-size: 0.8rem;">
                         <i class="fas fa-lock"></i> Staff
                     </a>
+                </div>
+                <div class="mobile-menu-btn" onclick="toggleMenu()">
+                    <i class="fas fa-bars"></i>
                 </div>
             </nav>
         </div>
