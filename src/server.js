@@ -48,6 +48,8 @@ app.use(express.json());
 
 // Serve static files ONLY from public folder
 app.use(express.static(path.join(__dirname, '../public')));
+// Serve static files for staff portal
+app.use('/staff', express.static(path.join(__dirname, '../staff/public')));
 
 
 // ========================================
