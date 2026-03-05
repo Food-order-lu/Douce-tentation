@@ -79,6 +79,26 @@
         </div>
     </section>
 
+    <!-- Menu de la Semaine Section -->
+    <section id="menu-semaine" class="menu-section">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-subtitle">Nouveautés</span>
+                <h2>Menu de la Semaine</h2>
+                <p>Découvrez notre sélection spéciale de la semaine</p>
+            </div>
+            <div class="weekly-menu-container reveal-up delay-1">
+                <div class="menu-image-wrapper">
+                    <img id="public-menu-img" src="" alt="Menu de la Semaine" style="display: none;">
+                    <div id="public-menu-placeholder" class="menu-placeholder">
+                        <i class="fas fa-utensils"></i>
+                        <p>Le menu de cette semaine arrive bientôt...</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
     <section id="products" class="products-section">
         <div class="container">
             <div class="section-header reveal-up">
@@ -120,6 +140,26 @@
                         <p>Des créations sur mesure pour vos moments inoubliables.</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Galerie Section -->
+    <section id="galerie" class="public-gallery-section">
+        <div class="container">
+            <div class="section-header reveal-up">
+                <span class="section-subtitle">En Images</span>
+                <h2>Notre Galerie</h2>
+                <p>Découvrez nos réalisations et nos événements</p>
+            </div>
+
+            <div class="public-gallery-filters reveal-up delay-1">
+                <button class="public-filter-btn active" data-filter="plats">Plats & Créations</button>
+                <button class="public-filter-btn" data-filter="events">Événements</button>
+            </div>
+
+            <div class="public-gallery-grid reveal-up delay-2" id="public-gallery-grid">
+                <div class="gallery-placeholder">Chargement des photos...</div>
             </div>
         </div>
     </section>
@@ -173,6 +213,8 @@
         </div>
     </footer>
 
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="js/gallery.js"></script>
     <script src="js/index_animation.js"></script>
     <script src="https://www.fbgcdn.com/embedder/js/ewm2.js" defer async></script>
 </body>

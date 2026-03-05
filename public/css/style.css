@@ -1538,6 +1538,120 @@ nav {
 }
 
 /* Tablet & Mobile Optimizations */
+/* ===================================
+   Menu de la Semaine Section
+   =================================== */
+.weekly-menu-container {
+    max-width: 800px;
+    margin: 0 auto;
+    background: var(--color-bg-card);
+    border-radius: var(--radius-lg);
+    border: 1px solid var(--glass-border);
+    padding: 20px;
+    backdrop-filter: var(--glass-blur);
+}
+
+.menu-image-wrapper {
+    width: 100%;
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    position: relative;
+    background: rgba(0, 0, 0, 0.4);
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.menu-image-wrapper img {
+    width: 100%;
+    height: auto;
+    display: block;
+    transition: transform 0.3s;
+}
+
+.menu-placeholder {
+    text-align: center;
+    color: var(--color-text-muted);
+    padding: 40px;
+}
+
+.menu-placeholder i {
+    font-size: 3rem;
+    color: var(--color-primary);
+    margin-bottom: 15px;
+    opacity: 0.5;
+}
+
+/* ===================================
+   Public Galerie Section
+   =================================== */
+.public-gallery-filters {
+    display: flex;
+    justify-content: center;
+    gap: 15px;
+    margin-bottom: 40px;
+}
+
+.public-filter-btn {
+    padding: 10px 25px;
+    background: transparent;
+    border: 1px solid var(--glass-border);
+    color: var(--color-text-main);
+    border-radius: var(--radius-lg);
+    cursor: pointer;
+    font-family: var(--font-body);
+    font-size: 1rem;
+    transition: var(--transition-fast);
+}
+
+.public-filter-btn:hover {
+    border-color: var(--color-primary);
+    background: rgba(212, 175, 55, 0.1);
+}
+
+.public-filter-btn.active {
+    background: var(--color-primary);
+    color: #000;
+    border-color: var(--color-primary);
+    font-weight: 600;
+}
+
+.public-gallery-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 20px;
+}
+
+.public-gallery-item {
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    aspect-ratio: 1;
+    position: relative;
+    border: 1px solid var(--glass-border);
+    background: #111;
+    animation: fadeInScale 0.5s ease-out;
+}
+
+.public-gallery-item img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.5s;
+}
+
+.public-gallery-item:hover img {
+    transform: scale(1.1);
+}
+
+.gallery-placeholder {
+    grid-column: 1 / -1;
+    text-align: center;
+    color: var(--color-text-muted);
+    font-style: italic;
+    padding: 30px;
+}
+
 @media (max-width: 1024px) {
     .dashboard-layout {
         grid-template-columns: 80px 1fr;
