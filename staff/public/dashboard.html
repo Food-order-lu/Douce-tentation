@@ -29,6 +29,10 @@
                     <i class="fas fa-calendar-alt"></i>
                     <span>Calendrier</span>
                 </a>
+                <a href="#" id="navGalerie">
+                    <i class="fas fa-images"></i>
+                    <span>Galerie & Menu</span>
+                </a>
             </nav>
 
             <div class="sidebar-footer">
@@ -92,6 +96,88 @@
                 </div>
                 <div id="statsContent" class="stats-grid">
                     <p style="color: #888;">Analyse des données en cours...</p>
+                </div>
+            </section>
+
+            <!-- Galerie & Menu View -->
+            <section id="galerieView" class="dashboard-section" style="display:none;">
+                <div class="calendar-header">
+                    <div>
+                        <h1 style="font-size: 2.5rem; margin-bottom: 5px;">Galerie & Menu</h1>
+                        <p style="color: var(--color-text-muted); font-weight: 300; letter-spacing: 0.5px;">Gérez les
+                            photos du site et le menu de la semaine.</p>
+                    </div>
+                </div>
+
+                <!-- Gallery Tabs -->
+                <div class="gallery-tabs">
+                    <button class="gallery-tab-btn active" data-gallery-tab="menu">📋 Menu Semaine</button>
+                    <button class="gallery-tab-btn" data-gallery-tab="gallery">📸 Photos Galerie</button>
+                </div>
+
+                <!-- Menu Tab Content -->
+                <div id="menuTabContent" class="gallery-tab-content active">
+                    <div class="gallery-upload-section">
+                        <h2>📋 Menu de la Semaine</h2>
+                        <div class="gallery-step-guide">
+                            <div class="gallery-step"><span>📸</span> 1. Photo</div>
+                            <div class="gallery-step"><span>📤</span> 2. Upload</div>
+                            <div class="gallery-step"><span>✨</span> 3. Fini!</div>
+                        </div>
+                        <label class="gallery-upload-label">
+                            <input type="file" id="menuUpload" accept="image/*" class="gallery-file-input">
+                            <span class="gallery-upload-btn">📤 Changer le Menu</span>
+                        </label>
+                        <div id="menuProgress" class="gallery-progress-container" style="display: none;">
+                            <div class="gallery-progress-bar"></div>
+                        </div>
+                        <div id="menuSuccess" class="gallery-success" style="display: none;">✅ Menu mis à jour !</div>
+                    </div>
+                    <div class="gallery-preview-section">
+                        <h3>Menu Actuel</h3>
+                        <div class="gallery-preview-box">
+                            <img id="menuImage" src="" alt="Menu de la semaine">
+                            <p id="menuPlaceholder" class="gallery-placeholder">Aucun menu uploadé</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Tab Content -->
+                <div id="galleryTabContent" class="gallery-tab-content">
+                    <div class="gallery-upload-section">
+                        <h2>📸 Ajouter une Photo</h2>
+                        <div style="margin-bottom: 15px;">
+                            <label style="color: #aaa; font-size: 0.85rem;">Catégorie :</label>
+                            <select id="galleryCategory" class="gallery-category-select">
+                                <option value="plats">🍰 Nos Créations</option>
+                                <option value="events">🎉 Événements</option>
+                            </select>
+                        </div>
+                        <label class="gallery-upload-label">
+                            <input type="file" id="galleryUpload" accept="image/*" class="gallery-file-input">
+                            <span class="gallery-upload-btn">➕ Ajouter une photo</span>
+                        </label>
+                        <div id="galleryProgress" class="gallery-progress-container" style="display: none;">
+                            <div class="gallery-progress-bar"></div>
+                        </div>
+                        <div id="gallerySuccess" class="gallery-success" style="display: none;">✅ Photo ajoutée !</div>
+                    </div>
+                    <div class="gallery-grid" id="galleryGrid">
+                        <p class="gallery-placeholder">Chargement des photos...</p>
+                    </div>
+                </div>
+
+                <!-- Delete Confirmation Modal -->
+                <div id="galleryDeleteModal" class="gallery-delete-modal">
+                    <div class="gallery-delete-modal-content">
+                        <h3>Confirmer la suppression</h3>
+                        <p>Êtes-vous sûr de vouloir supprimer cette image ?</p>
+                        <div class="gallery-modal-actions">
+                            <button id="cancelGalleryDelete" class="btn btn-secondary">Annuler</button>
+                            <button id="confirmGalleryDelete" class="btn"
+                                style="background: #E85D04; color: white;">Supprimer</button>
+                        </div>
+                    </div>
                 </div>
             </section>
 
@@ -397,11 +483,13 @@
             padding-right: 5px;
         }
     </style>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="js/utils.js"></script>
     <script src="js/api.js"></script>
     <script src="js/calendar.js"></script>
     <script src="js/menu.js"></script>
     <script src="js/modals.js"></script>
+    <script src="js/gallery-admin.js"></script>
     <script src="js/app.js"></script>
 
 </body>
